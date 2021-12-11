@@ -7,7 +7,9 @@ import { wrap } from 'comlink';
  */
 
 async function calculate(data) {
-  const audioCtx = new AudioContext();
+  const audioCtx = window.AudioContext
+    ? new AudioContext()
+    : new (await import('standardized-audio-context').AudioContext)();
 
   // 音声をデコードする
   /** @type {AudioBuffer} */

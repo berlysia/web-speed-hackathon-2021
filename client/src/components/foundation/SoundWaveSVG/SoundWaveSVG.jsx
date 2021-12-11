@@ -1,38 +1,11 @@
 import React from 'react';
-
-function zip(a, b) {
-  // サイズは同じ前提でチェック飛ばす
-  const result = [];
-  const len = a.length;
-  for (let i = 0; i < len; ++i) {
-    result.push([a[i], b[i]]);
-  }
-
-  return result;
-}
-
-function chunk(arr, size) {
-  const result = [];
-
-  for (let count = 0; count < arr.length; count += size) {
-    result.push(arr.slice(count, count + size));
-  }
-
-  return result;
-}
-
-function mean(arr) {
-  let sum = 0;
-  for (const item of arr) {
-    sum += item;
-  }
-  return sum / arr.length;
-}
+import { wrap } from 'comlink';
 
 /**
- * @param {ArrayBuffer} data
- * @returns {Promise<{ max: number, peaks: number[] }}
+ * @typedef {object} Props
+ * @property {ArrayBuffer} soundData
  */
+
 async function calculate(data) {
   const audioCtx = new AudioContext();
 
@@ -41,27 +14,17 @@ async function calculate(data) {
   const buffer = await new Promise((resolve, reject) => {
     audioCtx.decodeAudioData(data.slice(0), resolve, reject);
   });
-  // 左の音声データの絶対値を取る
-  const leftData = buffer.getChannelData(0).map((x) => Math.abs(x));
-  // 右の音声データの絶対値を取る
-  const rightData = buffer.getChannelData(1).map((x) => Math.abs(x));
 
-  // 左右の音声データの平均を取る
-  const normalized = zip(leftData, rightData).map((x) => mean(x));
-  // 100 個の chunk に分ける
-  const chunks = chunk(normalized, Math.ceil(normalized.length / 100));
-  // chunk ごとに平均を取る
-  const peaks = chunks.map((x) => mean(x));
-  // chunk の平均の中から最大値を取る
-  const max = Math.max(...peaks);
+  const left = buffer.getChannelData(0);
+  const right = buffer.getChannelData(1);
 
-  return { max, peaks };
+  if (window.Worker) {
+    const worker = wrap(new Worker('/scripts/SoundWaveWorker.js'));
+    return await worker.calculate(left, right);
+  }
+  const worker = await import('./SoundWaveWorker.js').then((m) => m.api);
+  return await worker.calculate(left, right);
 }
-
-/**
- * @typedef {object} Props
- * @property {ArrayBuffer} soundData
- */
 
 /**
  * @type {React.VFC<Props>}

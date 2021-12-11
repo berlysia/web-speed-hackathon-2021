@@ -13,7 +13,7 @@ async function convertMovie(buffer, options) {
     .filter(Boolean)
     .join(',');
 
-  const exportFile = `export.${options.extension ?? 'gif'}`;
+  const exportFile = `export.${options.extension ?? 'webm'}`;
 
   if (ffmpeg.isLoaded() === false) {
     await ffmpeg.load();
@@ -21,22 +21,7 @@ async function convertMovie(buffer, options) {
 
   ffmpeg.FS('writeFile', 'file', new Uint8Array(buffer));
 
-  await ffmpeg.run(
-    ...[
-      '-i',
-      'file',
-      '-t',
-      '5',
-      '-r',
-      '10',
-      '-vf',
-      `crop=${cropOptions}`,
-      ,
-      '-filter_complex "[0:v] fps=10,scale=512:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse"',
-      '-an',
-      exportFile,
-    ],
-  );
+  await ffmpeg.run(...['-i', 'file', '-t', '5', '-r', '10', '-vf', `crop=${cropOptions}`, '-an', exportFile]);
 
   return ffmpeg.FS('readFile', exportFile);
 }

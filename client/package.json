@@ -17,8 +17,6 @@
     "date-fns": "^2.27.0",
     "fast-average-color": "7.0.1",
     "gifler": "github:themadcreator/gifler#v0.3.0",
-    "jquery": "3.6.0",
-    "jquery-binarytransport": "1.0.0",
     "normalize.css": "8.0.1",
     "omggif": "1.0.10",
     "react": "17.0.2",

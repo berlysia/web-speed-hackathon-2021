@@ -2,6 +2,7 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 const HtmlCriticalWebpackPlugin = require('html-critical-webpack-plugin');
 
 const webpack = require('webpack');
@@ -10,6 +11,8 @@ const SRC_PATH = path.resolve(__dirname, './src');
 const PUBLIC_PATH = path.resolve(__dirname, '../public');
 const UPLOAD_PATH = path.resolve(__dirname, '../upload');
 const DIST_PATH = path.resolve(__dirname, '../dist');
+
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 /** @type {import('webpack').Configuration} */
 const config = {
@@ -22,7 +25,7 @@ const config = {
     },
     static: [PUBLIC_PATH, UPLOAD_PATH],
   },
-  devtool: 'inline-source-map',
+  devtool: IS_DEV ? 'inline-source-map' : false,
   entry: {
     main: [
       'core-js',
@@ -95,6 +98,15 @@ const config = {
       fs: false,
       path: false,
     },
+  },
+  optimization: {
+    minimizer: [
+      new ESBuildMinifyPlugin({
+        target: 'es2015',
+        css: true,
+      }),
+    ],
+    minimize: !IS_DEV,
   },
 };
 

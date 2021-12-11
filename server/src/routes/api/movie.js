@@ -27,7 +27,7 @@ router.post('/movies', async (req, res) => {
     // 動画の拡張子を指定する
     extension: EXTENSION,
     // 動画の縦横サイズを指定する (undefined は元動画に合わせる)
-    size: undefined,
+    size: 512,
   });
 
   const filePath = path.resolve(UPLOAD_PATH, `./movies/${movieId}.${EXTENSION}`);

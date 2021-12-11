@@ -84,9 +84,15 @@ const AppContainer = () => {
       </AppPage>
 
       {modalType === 'auth' ? (
-        <AuthModalContainer onRequestCloseModal={handleRequestCloseModal} onUpdateActiveUser={setActiveUser} />
+        <React.Suspense fallback={<div>loading...</div>}>
+          <AuthModalContainer onRequestCloseModal={handleRequestCloseModal} onUpdateActiveUser={setActiveUser} />
+        </React.Suspense>
       ) : null}
-      {modalType === 'post' ? <NewPostModalContainer onRequestCloseModal={handleRequestCloseModal} /> : null}
+      {modalType === 'post' ? (
+        <React.Suspense fallback={<div>loading...</div>}>
+          <NewPostModalContainer onRequestCloseModal={handleRequestCloseModal} />
+        </React.Suspense>
+      ) : null}
     </>
   );
 };

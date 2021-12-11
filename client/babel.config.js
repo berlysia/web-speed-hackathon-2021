@@ -5,14 +5,9 @@ module.exports = {
       {
         corejs: '3',
         modules: 'commonjs',
-        useBuiltIns: false,
+        useBuiltIns: 'usage',
       },
     ],
-    [
-      '@babel/preset-react',
-      {
-        development: true,
-      },
-    ],
+    ['@babel/preset-react'],
   ],
 };

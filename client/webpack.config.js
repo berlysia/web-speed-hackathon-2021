@@ -34,6 +34,7 @@ const config = {
       path.resolve(SRC_PATH, './buildinfo.js'),
       path.resolve(SRC_PATH, './index.jsx'),
     ],
+    webfont: path.resolve(SRC_PATH, './styles/webfont.css'),
   },
   mode: 'none',
   module: {
@@ -73,7 +74,6 @@ const config = {
     new HtmlWebpackPlugin({
       inject: false,
       template: path.resolve(SRC_PATH, './index.ejs'),
-      chunks: ['main'],
     }),
     new HTMLInlineCSSWebpackPlugin(),
   ],

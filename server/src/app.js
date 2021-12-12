@@ -23,11 +23,18 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ limit: '10mb' }));
 
-app.use((_req, res, next) => {
-  res.header({
-    'Cache-Control': 'max-age=0',
-    Connection: 'close',
-  });
+const staticfiles = ['/movies/', '/fonts/', '/images/', '/sounds/'];
+
+app.use((req, res, next) => {
+  if (req.method === 'GET' && staticfiles.some((x) => req.path.startsWith(x))) {
+    res.header({
+      'Cache-Control': 'public, max-age=86400, immutable',
+    });
+  } else {
+    res.header({
+      'Cache-Control': 'max-age=0',
+    });
+  }
   return next();
 });
 

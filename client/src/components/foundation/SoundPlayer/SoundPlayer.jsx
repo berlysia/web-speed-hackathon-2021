@@ -67,7 +67,7 @@ const SoundPlayer = ({ sound }) => {
             {isReady && (
               <div className="relative w-full h-full">
                 <div className="absolute inset-0 w-full h-full">
-                  <SoundWaveSVG soundData={data} />
+                  <SoundWaveSVG id={sound.id} />
                 </div>
                 <div
                   className="absolute inset-0 w-full h-full bg-gray-300 opacity-75"

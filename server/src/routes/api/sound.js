@@ -6,6 +6,7 @@ import httpErrors from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 
 import { convertSound } from '../../converters/convert_sound';
+import { convertSoundWave } from '../../converters/convert_sound_wave';
 import { UPLOAD_PATH } from '../../paths';
 import { extractMetadataFromSound } from '../../utils/extract_metadata_from_sound';
 
@@ -31,8 +32,10 @@ router.post('/sounds', async (req, res) => {
     extension: EXTENSION,
   });
 
-  const filePath = path.resolve(UPLOAD_PATH, `./sounds/${soundId}.${EXTENSION}`);
-  await fs.writeFile(filePath, converted);
+  const svg = await convertSoundWave(converted);
+
+  await fs.writeFile(path.resolve(UPLOAD_PATH, `./sounds/${soundId}.${EXTENSION}`), converted);
+  await fs.writeFile(path.resolve(UPLOAD_PATH, `./sounds/${soundId}.svg`), svg);
 
   return res.status(200).type('application/json').send({ artist, id: soundId, title });
 });

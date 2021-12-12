@@ -1,5 +1,3 @@
-import { expose } from 'comlink';
-
 function zip(a, b) {
   // サイズは同じ前提でチェック飛ばす
   const result = [];
@@ -52,4 +50,39 @@ async function calculate(left, right) {
   return { max, peaks };
 }
 
-expose({ calculate });
+function createSVG(max, peaks) {
+  return `<?xml version="1.0" encoding="UTF-8"?><svg preserveAspectRatio="none" viewBox="0 0 100 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      ${peaks
+        .map((peak, idx) => {
+          const ratio = peak / max;
+          return `<rect fill="#2563EB" height="${ratio}" width="1" x="${idx}" y="${1 - ratio}" />`;
+        })
+        .join('\n')}
+    </svg>`;
+}
+
+/**
+ * @typedef {object} Props
+ * @property {ArrayBuffer} soundData
+ */
+
+async function convertSoundWave(data) {
+  const audioCtx = new (require('web-audio-api').AudioContext)();
+
+  // 音声をデコードする
+  /** @type {AudioBuffer} */
+  const buffer = await new Promise((resolve, reject) => {
+    audioCtx.decodeAudioData(data.slice(0), resolve, reject);
+  });
+
+  const left = buffer.getChannelData(0);
+  const right = buffer.getChannelData(1);
+
+  const seeds = await calculate(left, right);
+
+  const svgStr = createSVG(seeds.max, seeds.peaks);
+
+  return svgStr;
+}
+
+module.exports = { convertSoundWave };

@@ -34,7 +34,6 @@ const config = {
       path.resolve(SRC_PATH, './buildinfo.js'),
       path.resolve(SRC_PATH, './index.jsx'),
     ],
-    SoundWaveWorker: path.resolve(SRC_PATH, './components/foundation/SoundWaveSVG/SoundWaveWorker.js'),
   },
   mode: 'none',
   module: {

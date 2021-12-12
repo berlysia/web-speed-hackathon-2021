@@ -10,7 +10,7 @@ const NewPostModalContainer = React.lazy(() => import('../NewPostModalContainer'
 const NotFoundContainer = React.lazy(() => import('../NotFoundContainer'));
 const PostContainer = React.lazy(() => import('../PostContainer'));
 const TermContainer = React.lazy(() => import('../TermContainer'));
-import TimelineContainer from '../TimelineContainer';
+const TimelineContainer = React.lazy(() => import('../TimelineContainer'));
 const UserProfileContainer = React.lazy(() => import('../UserProfileContainer'));
 
 /** @type {React.VFC} */
@@ -47,7 +47,14 @@ const AppContainer = () => {
         onRequestOpenPostModal={handleRequestOpenPostModal}
       >
         <Routes>
-          <Route element={<TimelineContainer />} path="/" />
+          <Route
+            element={
+              <React.Suspense fallback={<div>loading...</div>}>
+                <TimelineContainer />
+              </React.Suspense>
+            }
+            path="/"
+          />
           <Route
             element={
               <React.Suspense fallback={<div>loading...</div>}>

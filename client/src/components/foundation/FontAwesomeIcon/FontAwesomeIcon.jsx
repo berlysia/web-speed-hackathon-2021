@@ -10,7 +10,7 @@ import React from 'react';
 const FontAwesomeIcon = ({ iconType, styleType }) => {
   return (
     <svg className="font-awesome inline-block leading-none fill-current">
-      <use xlinkHref={`/sprites/font-awesome/${styleType}.svg#${iconType}`} />
+      <use xlinkHref={`/sprites/font-awesome/${styleType}-picked.svg#${iconType}`} />
     </svg>
   );
 };

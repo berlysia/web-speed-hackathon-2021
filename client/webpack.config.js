@@ -75,7 +75,6 @@ const config = {
       inject: false,
       template: path.resolve(SRC_PATH, './index.ejs'),
     }),
-    new HTMLInlineCSSWebpackPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],

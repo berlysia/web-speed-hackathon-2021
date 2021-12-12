@@ -31,7 +31,7 @@ async function fetchJSON(url) {
  */
 async function sendFile(url, file) {
   const result = await fetch(url, {
-    data: file,
+    body: file,
     headers: {
       'Content-Type': 'application/octet-stream',
     },
@@ -51,7 +51,7 @@ async function sendJSON(url, data) {
   const jsonString = JSON.stringify(data);
 
   const result = await fetch(url, {
-    data: jsonString,
+    body: jsonString,
     headers: {
       'Content-Type': 'application/json',
     },

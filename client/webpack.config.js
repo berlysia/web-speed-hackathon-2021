@@ -55,7 +55,7 @@ const config = {
     ],
   },
   output: {
-    filename: 'scripts/[name].js',
+    filename: 'scripts/[name].[hash].js',
     path: DIST_PATH,
   },
   plugins: [
@@ -73,7 +73,8 @@ const config = {
     }),
     new HtmlWebpackPlugin({
       inject: false,
-      template: path.resolve(SRC_PATH, './index.html'),
+      template: path.resolve(SRC_PATH, './index.ejs'),
+      chunks: ['main'],
     }),
     new HTMLInlineCSSWebpackPlugin(),
   ],

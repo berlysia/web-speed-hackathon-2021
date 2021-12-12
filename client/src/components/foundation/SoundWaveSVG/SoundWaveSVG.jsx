@@ -21,7 +21,7 @@ async function calculate(data) {
   const right = buffer.getChannelData(1);
 
   if (window.Worker) {
-    const worker = wrap(new Worker('/scripts/SoundWaveWorker.js'));
+    const worker = wrap(new Worker(new URL('./SoundWaveWorker.js', import.meta.url)));
     return await worker.calculate(left, right);
   }
   const worker = await import('./SoundWaveWorker.js').then((m) => m.api);

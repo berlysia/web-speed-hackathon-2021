@@ -27,9 +27,9 @@ router.post('/images', async (req, res) => {
     // 画像の拡張子を指定する
     extension: EXTENSION,
     // 画像の縦サイズを指定する (undefined は元画像に合わせる)
-    height: undefined,
+    height: 512,
     // 画像の横サイズを指定する (undefined は元画像に合わせる)
-    width: undefined,
+    width: 512,
   });
 
   const filePath = path.resolve(UPLOAD_PATH, `./images/${imageId}.${EXTENSION}`);

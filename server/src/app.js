@@ -23,7 +23,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ limit: '10mb' }));
 
-const staticfiles = ['/movies/', '/fonts/', '/images/', '/sounds/'];
+const staticfiles = ['/movies/', '/fonts/', '/images/', '/sounds/', '/sprites/'];
 
 app.use((req, res, next) => {
   if (req.method === 'GET' && staticfiles.some((x) => req.path.startsWith(x))) {

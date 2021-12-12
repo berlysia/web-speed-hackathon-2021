@@ -32,39 +32,19 @@ const SoundPlayer = ({ sound }) => {
   /** @type {React.RefObject<HTMLAudioElement>} */
   const audioRef = React.useRef(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const isReady = !(isLoading || data === null || blobUrl === null);
   const handleTogglePlaying = React.useCallback(() => {
-    setIsPlaying((isPlaying) => {
-      if (isPlaying) {
-        audioRef.current?.pause();
-      } else {
-        audioRef.current?.play();
-      }
-      return !isPlaying;
-    });
-  }, []);
-
-  if (isLoading || data === null || blobUrl === null) {
-    return (
-      <div className="flex items-center justify-center w-full h-full bg-gray-300">
-        <div className="p-2">
-          <button
-            className="flex items-center justify-center w-8 h-8 text-white text-sm bg-blue-600 rounded-full hover:opacity-75"
-            onClick={handleTogglePlaying}
-            type="button"
-          >
-            <FontAwesomeIcon iconType={isPlaying ? 'pause' : 'play'} styleType="solid" />
-          </button>
-        </div>
-        <div className="flex flex-col flex-grow flex-shrink pt-2 min-w-0 h-full">
-          <p className="whitespace-nowrap text-sm font-bold overflow-hidden overflow-ellipsis">loading...</p>
-          <p className="text-gray-500 whitespace-nowrap text-sm overflow-hidden overflow-ellipsis">loading...</p>
-          <div className="pt-2">
-            <AspectRatioBox aspectHeight={1} aspectWidth={10}></AspectRatioBox>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    if (isReady) {
+      setIsPlaying((isPlaying) => {
+        if (isPlaying) {
+          audioRef.current?.pause();
+        } else {
+          audioRef.current?.play();
+        }
+        return !isPlaying;
+      });
+    }
+  }, [isReady]);
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gray-300">
@@ -73,6 +53,7 @@ const SoundPlayer = ({ sound }) => {
         <button
           className="flex items-center justify-center w-8 h-8 text-white text-sm bg-blue-600 rounded-full hover:opacity-75"
           onClick={handleTogglePlaying}
+          disabled={!isReady}
           type="button"
         >
           <FontAwesomeIcon iconType={isPlaying ? 'pause' : 'play'} styleType="solid" />
@@ -83,15 +64,17 @@ const SoundPlayer = ({ sound }) => {
         <p className="text-gray-500 whitespace-nowrap text-sm overflow-hidden overflow-ellipsis">{sound.artist}</p>
         <div className="pt-2">
           <AspectRatioBox aspectHeight={1} aspectWidth={10}>
-            <div className="relative w-full h-full">
-              <div className="absolute inset-0 w-full h-full">
-                <SoundWaveSVG soundData={data} />
+            {isReady && (
+              <div className="relative w-full h-full">
+                <div className="absolute inset-0 w-full h-full">
+                  <SoundWaveSVG soundData={data} />
+                </div>
+                <div
+                  className="absolute inset-0 w-full h-full bg-gray-300 opacity-75"
+                  style={{ left: `${currentTimeRatio * 100}%` }}
+                ></div>
               </div>
-              <div
-                className="absolute inset-0 w-full h-full bg-gray-300 opacity-75"
-                style={{ left: `${currentTimeRatio * 100}%` }}
-              ></div>
-            </div>
+            )}
           </AspectRatioBox>
         </div>
       </div>

@@ -15,7 +15,7 @@ async function convertSound(buffer, options) {
 
   ffmpeg.FS('writeFile', 'file', new Uint8Array(buffer));
 
-  await ffmpeg.run(...['-i', 'file', '-vn', exportFile]);
+  await ffmpeg.run(...['-i', 'file', '-vn', '-acodec', 'aac', '-b:a', '128k', exportFile]);
 
   return ffmpeg.FS('readFile', exportFile);
 }

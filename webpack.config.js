@@ -8,7 +8,7 @@ const LoadablePlugin = require('@loadable/webpack-plugin');
 
 const webpack = require('webpack');
 
-const BabelClientConfig = require('./babel.client.config');
+const BabelClientConfig = require('./babel.config');
 
 const SRC_PATH = path.resolve(__dirname, './src/client');
 const PUBLIC_PATH = path.resolve(__dirname, './public');
@@ -38,6 +38,10 @@ const config = {
       ],
     },
     webfont: path.resolve(SRC_PATH, './styles/webfont.css'),
+    timeline: path.resolve(SRC_PATH, './components/timeline/Timeline/index.js'),
+    post: path.resolve(SRC_PATH, './pages/Post/PostContainer/index.js'),
+    term: path.resolve(SRC_PATH, './pages/Term/TermContainer/index.js'),
+    userprofile: path.resolve(SRC_PATH, './pages/UserProfile/UserProfileContainer/index.js'),
   },
   mode: 'none',
   module: {
@@ -80,12 +84,7 @@ const config = {
     //   inject: false,
     //   template: path.resolve(SRC_PATH, './index.ejs'),
     // }),
-    new WebpackManifestPlugin({
-      filter: (file) => {
-        if (file.name.match(/^webfont\.js$/)) return false;
-        return true;
-      },
-    }),
+    new WebpackManifestPlugin({}),
     new LoadablePlugin(),
   ],
   resolve: {
@@ -103,9 +102,10 @@ const config = {
       }),
     ],
     minimize: !IS_DEV,
-    chunkIds: 'named',
+    chunkIds: 'deterministic',
     splitChunks: {
-      chunks: 'all',
+      minSize: 20000,
+      chunks: 'initial',
       cacheGroups: {
         defaultVendors: {
           name: 'vendors',

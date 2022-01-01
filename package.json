@@ -8,7 +8,7 @@
     "prebuild": "rimraf ./dist",
     "prestart": "npm-run-all prestart:clean prestart:init",
     "develop": "cross-env NODE_ENV=development webpack serve",
-    "start": "babel-node --config-file ./babel.server.config.js --experimental-wasm-threads src/server/index.js",
+    "start": "babel-node --experimental-wasm-threads src/server/index.js",
     "prestart:clean": "rimraf ./upload",
     "prestart:init": "mkdirp ./upload/images ./upload/movies ./upload/sounds"
   },

@@ -15,8 +15,10 @@ async function readManifest() {
   const filepath = path.resolve(__dirname, '../../../dist/manifest.json');
   return JSON.parse(await readFile(filepath, 'utf-8'));
 }
-
-const statsFile = path.resolve(__dirname, '../../../dist/loadable-stats.json');
+async function readLoadableStats() {
+  const filepath = path.resolve(__dirname, '../../../dist/loadable-stats.json');
+  return JSON.parse(await readFile(filepath, 'utf-8'));
+}
 
 async function buildHeadTags() {
   const manifest = await readManifest();
@@ -24,7 +26,7 @@ async function buildHeadTags() {
   const css = [];
   // const lazyCss = [];
   for (const [name, url] of Object.entries(manifest)) {
-    if (name.endsWith('.js')) js.push(url);
+    // if (name.endsWith('.js')) js.push(url);
     if (name.endsWith('.css')) css.push(url);
   }
   return [
@@ -43,7 +45,7 @@ function setup() {
   return {
     queryClient,
     async renderHTML(url, headTags) {
-      const extractor = new ChunkExtractor({ statsFile });
+      const extractor = new ChunkExtractor({ stats: await readLoadableStats() });
       const dehydratedState = dehydrate(queryClient);
       const appHtml = renderToString(
         extractor.collectChunks(
@@ -60,7 +62,7 @@ function setup() {
       return await ejs.renderFile(
         path.resolve(__dirname, '../../client/index.ejs'),
         {
-          headTags: extractor.getScriptTags() + headTags.join('\n') + extractor.getLinkTags(),
+          headTags: extractor.getLinkTags() + "\n" + extractor.getScriptTags() + "\n" + headTags.join('\n'),
           appHtml,
           dehydratedState,
         },

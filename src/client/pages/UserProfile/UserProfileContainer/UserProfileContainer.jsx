@@ -6,7 +6,6 @@ import { UserProfilePage } from '../user_profile/UserProfilePage';
 import { useFetch } from '../../../hooks/use_fetch';
 import { useInfiniteFetch } from '../../../hooks/use_infinite_fetch';
 import { fetchJSON } from '../../../utils/fetchers';
-import { buildInitialData, buildInitialDataForInfinite } from '../../../utils/buildInitialData';
 import NotFoundContainer from '../../NotFound/NotFoundContainer';
 import { useDocumentTitle } from '../../../hooks/use_document_title';
 
@@ -14,12 +13,8 @@ import { useDocumentTitle } from '../../../hooks/use_document_title';
 const UserProfileContainer = () => {
   const { username } = useParams();
 
-  const { data: user, isLoading: isLoadingUser } = useFetch(`/api/v1/users/${username}`, fetchJSON, {
-    ...buildInitialData(`/api/v1/users/${username}`),
-  });
-  const { data: posts, fetchMore } = useInfiniteFetch(`/api/v1/users/${username}/posts`, fetchJSON, {
-    ...buildInitialDataForInfinite(`/api/v1/users/${username}/posts`),
-  });
+  const { data: user, isLoading: isLoadingUser } = useFetch(`/api/v1/users/${username}`, fetchJSON);
+  const { data: posts, fetchMore } = useInfiniteFetch(`/api/v1/users/${username}/posts`, fetchJSON);
 
   useDocumentTitle(isLoadingUser ? "読込中 - CAwitter" : user ? `${user.name} さんのタイムライン - CAwitter` : null)
 

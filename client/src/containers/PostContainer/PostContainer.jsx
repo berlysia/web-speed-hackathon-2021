@@ -7,15 +7,22 @@ import { PostPage } from '../../components/post/PostPage';
 import { useFetch } from '../../hooks/use_fetch';
 import { useInfiniteFetch } from '../../hooks/use_infinite_fetch';
 import { fetchJSON } from '../../utils/fetchers';
+import { buildInitialData, buildInitialDataForInfinite } from '../../utils/buildInitialData';
 import { NotFoundContainer } from '../NotFoundContainer';
 
 /** @type {React.VFC} */
 const PostContainer = () => {
   const { postId } = useParams();
 
-  const { data: post, isLoading: isLoadingPost } = useFetch(`/api/v1/posts/${postId}`, fetchJSON);
+  const { data: post, isLoading: isLoadingPost } = useFetch(`/api/v1/posts/${postId}`, fetchJSON, {
+    ...buildInitialData(`/api/v1/posts/${postId}`),
+  });
 
-  const { data: comments, fetchMore } = useInfiniteFetch(`/api/v1/posts/${postId}/comments`, fetchJSON);
+  const { data: comments, fetchMore } = useInfiniteFetch(`/api/v1/posts/${postId}/comments`, fetchJSON, {
+    ...buildInitialDataForInfinite(`/api/v1/posts/${postId}/comments`),
+  });
+
+  console.log({post, comments});
 
   if (isLoadingPost) {
     return (

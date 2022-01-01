@@ -18,12 +18,13 @@ const LIMIT = 10;
  * @param {(apiPath: string) => Promise<T[]>} fetcher
  * @returns {ReturnValues<T>}
  */
-export function useInfiniteFetch(apiPath, fetcher) {
+export function useInfiniteFetch(apiPath, fetcher, option = {}) {
   const result = useInfiniteQuery(
     apiPath,
     (context) =>
       fetcher(`${context.queryKey[0]}?limit=${LIMIT}${context.pageParam ? `&offset=${context.pageParam}` : ''}`),
     {
+      ...option,
       getNextPageParam: (_lastPage, allPages) => {
         return allPages.length * LIMIT;
       },

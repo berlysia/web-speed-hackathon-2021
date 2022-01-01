@@ -14,6 +14,6 @@ import { useQuery } from "react-query";
  * @param {(apiPath: string) => Promise<T>} fetcher
  * @returns {ReturnValues<T>}
  */
-export function useFetch(apiPath, fetcher) {
-  return useQuery(apiPath, (context) => fetcher(context.queryKey[0]));
+export function useFetch(apiPath, fetcher, option = {}) {
+  return useQuery(apiPath, (context) => fetcher(context.queryKey[0]), option);
 }

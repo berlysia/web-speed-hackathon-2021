@@ -22,8 +22,6 @@ const PostContainer = () => {
     ...buildInitialDataForInfinite(`/api/v1/posts/${postId}/comments`),
   });
 
-  console.log({post, comments});
-
   if (isLoadingPost) {
     return (
       <Helmet>

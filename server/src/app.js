@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/v1', apiRouter);
-app.use(staticRouter);
 app.use(ssrRouter);
+app.use(staticRouter);
 
 export { app };

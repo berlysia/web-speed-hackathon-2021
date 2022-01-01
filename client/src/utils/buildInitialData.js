@@ -1,4 +1,4 @@
-const map = new WeakMap();
+const map = new Map();
 export function buildInitialData(key) {
   const cached = map.get(key);
   if (cached) return { initialData: cached };
@@ -19,12 +19,13 @@ export function buildInitialData(key) {
 
 export function buildInitialDataForInfinite(key) {
   const cached = map.get(key);
-  if (cached) return {
-    initialData: {
-      pages: [cached],
-      pageParam: undefined
-    },
-  };
+  if (cached)
+    return {
+      initialData: {
+        pages: [cached],
+        pageParam: undefined,
+      },
+    };
 
   const data = window.__REACT_QUERY_PREFETCHED__?.[key];
   if (!data) return {};
@@ -37,7 +38,7 @@ export function buildInitialDataForInfinite(key) {
           pages: [parsed],
           pageParam: undefined,
         },
-      };;
+      };
     }
   } catch (e) {
     console.error('broken JSON', e);

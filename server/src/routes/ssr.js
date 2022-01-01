@@ -12,8 +12,9 @@ async function readManifest() {
 async function buildHeadTags() {
   const raw = await readManifest();
   const manifest = JSON.parse(raw);
-  const js = [],
-    css = [];
+  const js = [];
+  const css = [];
+  // const lazyCss = [];
   for (const [name, url] of Object.entries(manifest)) {
     if (name.endsWith('.js')) js.push(url);
     if (name.endsWith('.css')) css.push(url);
@@ -21,6 +22,10 @@ async function buildHeadTags() {
   return [
     ...js.map((p) => `<script defer src="${p}"></script>`),
     ...css.map((p) => `<link rel="stylesheet" href="${p}" />`),
+    // ...lazyCss.map(
+    //   (p) =>
+    //     `<link rel="prefetch" href="${p}" as="stylesheet" /><script defer>setTimeout(()=>{const t=document.createElement("link");t.as="style";t.rel="stylesheet";t.href="${p}";setTimeout(()=>document.head.append(t),0)},0)</script>`,
+    // ),
   ];
 }
 
@@ -63,7 +68,7 @@ router.get('/', async (req, res) => {
   });
   const headTags = await buildHeadTags();
 
-  await handle(res, [...headTags, buildPrefetched('/api/v1/posts', posts)]);
+  await handle(res, [buildPrefetched('/api/v1/posts', posts), ...headTags]);
   res.end();
 });
 
@@ -87,9 +92,9 @@ router.get('/users/:username', async (req, res) => {
   const headTags = await buildHeadTags();
 
   await handle(res, [
-    ...headTags,
     buildPrefetched(`/api/v1/users/${req.params.username}`, user),
     buildPrefetched(`/api/v1/users/${req.params.username}/posts`, posts),
+    ...headTags,
   ]);
   res.end();
 });
@@ -107,9 +112,9 @@ router.get('/posts/:postId', async (req, res) => {
   const headTags = await buildHeadTags();
 
   await handle(res, [
-    ...headTags,
     buildPrefetched(`/api/v1/posts/${req.params.postId}`, post),
     buildPrefetched(`/api/v1/posts/${req.params.postId}/comments`, comments),
+    ...headTags,
   ]);
   res.end();
 });

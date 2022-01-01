@@ -79,7 +79,7 @@ const config = {
     // }),
     new WebpackManifestPlugin({
       filter: (file) => {
-        if (file.name.match(/^webfont\.(js|css)$/)) return false;
+        if (file.name.match(/^webfont\.js$/)) return false;
         return true;
       },
     }),
@@ -104,7 +104,7 @@ const config = {
       chunks: 'all',
       cacheGroups: {
         defaultVendors: {
-          name: "vendors",
+          name: 'vendors',
           test: /[\\/]node_modules[\\/]/,
           priority: -10,
           reuseExistingChunk: true,

@@ -12,6 +12,20 @@ const LIMIT = 10;
  * @property {() => Promise<void>} fetchMore
  */
 
+export function wrapFetcherAsInfinite(fetcher) {
+  return (context) =>
+    fetcher(`${context.queryKey[0]}?limit=${LIMIT}${context.pageParam ? `&offset=${context.pageParam}` : ''}`);
+}
+
+export function buildInfiniteQueryOption(option) {
+  return {
+    ...option,
+    getNextPageParam: (_lastPage, allPages) => {
+      return allPages.length * LIMIT;
+    },
+  };
+}
+
 /**
  * @template T
  * @param {string} apiPath
@@ -19,17 +33,7 @@ const LIMIT = 10;
  * @returns {ReturnValues<T>}
  */
 export function useInfiniteFetch(apiPath, fetcher, option = {}) {
-  const result = useInfiniteQuery(
-    apiPath,
-    (context) =>
-      fetcher(`${context.queryKey[0]}?limit=${LIMIT}${context.pageParam ? `&offset=${context.pageParam}` : ''}`),
-    {
-      ...option,
-      getNextPageParam: (_lastPage, allPages) => {
-        return allPages.length * LIMIT;
-      },
-    },
-  );
+  const result = useInfiniteQuery(apiPath, wrapFetcherAsInfinite(fetcher), buildInfiniteQueryOption(option));
 
   const data = React.useMemo(() => result.data?.pages.flat() ?? [], [result.data?.pages]);
 

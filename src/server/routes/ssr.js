@@ -7,6 +7,8 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { Root } from '../../client/root';
+import { dehydrate, Hydrate, QueryClient, QueryClientProvider } from 'react-query';
+import { wrapFetcherAsInfinite } from '../../client/hooks/use_infinite_fetch';
 
 async function readManifest() {
   const filepath = path.resolve(__dirname, '../../../dist/manifest.json');
@@ -33,52 +35,48 @@ async function buildHeadTags() {
   ];
 }
 
-async function handleSSR(req, headTags) {
-  const html = renderToString(
-    <StaticRouter location={req.url}>
-      <Root />
-    </StaticRouter>,
-  );
-  console.log({ html });
-  return ejs.renderFile(
-    path.resolve(__dirname, '../../client/index.ejs'),
-    { headTags: headTags.join('\n') },
-    {},
-  );
-}
+function setup() {
+  const queryClient = new QueryClient();
 
-async function handle(req, res, headTags) {
-  res.type('text/html');
-  try {
-    const rendered = await handleSSR(req, headTags);
-    res.send(rendered);
-    res.status(200);
-  } catch (e) {
-    console.error(e);
-    res.write(`
-      <h1>Error</h1>
-      <h2>${e.message}</h2>
-      <code><pre>${e.stack}</pre></code>
-    `);
-    res.status(500);
-  }
-}
-
-function buildPrefetched(key, value) {
-  return `<script>window.__REACT_QUERY_PREFETCHED__[${JSON.stringify(key)}] = ${JSON.stringify(
-    JSON.stringify(value),
-  )};</script>`;
+  return {
+    queryClient,
+    async renderHTML(url, headTags) {
+      const dehydratedState = dehydrate(queryClient);
+      const appHtml = renderToString(
+        <StaticRouter location={url}>
+          <QueryClientProvider client={queryClient}>
+            <Hydrate state={dehydratedState}>
+              <Root />
+            </Hydrate>
+          </QueryClientProvider>
+        </StaticRouter>,
+      );
+      return await ejs.renderFile(
+        path.resolve(__dirname, '../../client/index.ejs'),
+        { headTags: headTags.join("\n"), appHtml, dehydratedState },
+        {},
+      );
+    },
+  };
 }
 
 const router = Router();
 
 router.get('/', async (req, res) => {
+  const { queryClient, renderHTML } = setup();
   const posts = await Post.findAll({
     limit: 10,
   });
+  await Promise.all([
+    queryClient.prefetchInfiniteQuery(
+      '/api/v1/posts',
+      wrapFetcherAsInfinite(() => posts),
+    ),
+  ]);
   const headTags = await buildHeadTags();
 
-  await handle(req, res, [buildPrefetched('/api/v1/posts', posts), ...headTags]);
+  res.type('text/html');
+  res.send(await renderHTML(req.url, headTags));
   res.end();
 });
 
@@ -99,13 +97,19 @@ router.get('/users/:username', async (req, res) => {
       userId: user.id,
     },
   });
+
+  const { queryClient, renderHTML } = setup();
+  await Promise.all([
+    queryClient.prefetchQuery(`/api/v1/users/${req.params.username}`, () => user),
+    queryClient.prefetchInfiniteQuery(
+      `/api/v1/users/${req.params.username}/posts`,
+      wrapFetcherAsInfinite(() => posts),
+    ),
+  ]);
   const headTags = await buildHeadTags();
 
-  await handle(req, res, [
-    buildPrefetched(`/api/v1/users/${req.params.username}`, user),
-    buildPrefetched(`/api/v1/users/${req.params.username}/posts`, posts),
-    ...headTags,
-  ]);
+  res.type('text/html');
+  res.send(await renderHTML(req.url, headTags));
   res.end();
 });
 
@@ -119,20 +123,28 @@ router.get('/posts/:postId', async (req, res) => {
       },
     }),
   ]);
+
+  const { queryClient, renderHTML } = setup();
+  await Promise.all([
+    queryClient.prefetchQuery(`/api/v1/posts/${req.params.postId}`, () => post),
+    queryClient.prefetchInfiniteQuery(
+      `/api/v1/posts/${req.params.postId}/comments`,
+      wrapFetcherAsInfinite(() => comments),
+    ),
+  ]);
   const headTags = await buildHeadTags();
 
-  await handle(req, res, [
-    buildPrefetched(`/api/v1/posts/${req.params.postId}`, post),
-    buildPrefetched(`/api/v1/posts/${req.params.postId}/comments`, comments),
-    ...headTags,
-  ]);
+  res.type('text/html');
+  res.send(await renderHTML(req.url, headTags));
   res.end();
 });
 
-router.get('/terms', async (_req, res) => {
+router.get('/terms', async (req, res) => {
+  const { renderHTML } = setup();
   const headTags = await buildHeadTags();
 
-  await handle(req, res, headTags);
+  res.type('text/html');
+  res.send(await renderHTML(req.url, headTags));
   res.end();
 });
 

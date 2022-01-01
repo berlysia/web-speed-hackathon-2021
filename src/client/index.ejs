@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CAwitter</title>
-    <script>window.__REACT_QUERY_PREFETCHED__ = {};</script>
+    <script>window.__REACT_QUERY_STATE__  = <%- JSON.stringify(dehydratedState) %>;</script>
 
     <%- headTags %>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app"><%- appHtml %></div>
     <div id="modal"></div>
   </body>
 </html>

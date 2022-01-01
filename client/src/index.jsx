@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { AppContainer } from './containers/AppContainer';
+import { DocumentTitleContextProvider } from './hooks/use_document_title';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,9 @@ const queryClient = new QueryClient({
 ReactDOM.render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <AppContainer />
+      <DocumentTitleContextProvider>
+        <AppContainer />
+      </DocumentTitleContextProvider>
     </BrowserRouter>
   </QueryClientProvider>,
   document.getElementById('app'),

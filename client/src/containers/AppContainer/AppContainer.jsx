@@ -1,9 +1,9 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { AppPage } from '../../components/application/AppPage';
 import { useFetch } from '../../hooks/use_fetch';
+import { useDocumentTitle } from '../../hooks/use_document_title';
 import { fetchJSON } from '../../utils/fetchers';
 const AuthModalContainer = React.lazy(() => import('../AuthModalContainer'));
 const NewPostModalContainer = React.lazy(() => import('../NewPostModalContainer'));
@@ -31,12 +31,10 @@ const AppContainer = () => {
   const handleRequestOpenPostModal = React.useCallback(() => setModalType('post'), []);
   const handleRequestCloseModal = React.useCallback(() => setModalType('none'), []);
 
+  useDocumentTitle(isLoading && "読込中 - CAwitter")
+
   if (isLoading) {
-    return (
-      <Helmet>
-        <title>読込中 - CAwitter</title>
-      </Helmet>
-    );
+    return null;
   }
 
   return (

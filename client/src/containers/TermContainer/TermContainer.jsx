@@ -1,18 +1,12 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 
 import { TermPage } from '../../components/term/TermPage';
+import { useDocumentTitle } from '../../hooks/use_document_title';
 
 /** @type {React.VFC} */
 const TermContainer = () => {
-  return (
-    <>
-      <Helmet>
-        <title>利用規約 - CAwitter</title>
-      </Helmet>
-      <TermPage />
-    </>
-  );
+  useDocumentTitle("利用規約 - CAwitter")
+  return <TermPage />;
 };
 
 export { TermContainer };

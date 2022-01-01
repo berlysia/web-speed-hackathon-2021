@@ -1,11 +1,11 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 
 import { InfiniteScroll } from '../../components/foundation/InfiniteScroll';
 import { TimelinePage } from '../../components/timeline/TimelinePage';
 import { useInfiniteFetch } from '../../hooks/use_infinite_fetch';
 import { fetchJSON } from '../../utils/fetchers';
 import { buildInitialDataForInfinite } from '../../utils/buildInitialData';
+import { useDocumentTitle } from '../../hooks/use_document_title';
 
 /** @type {React.VFC} */
 const TimelineContainer = () => {
@@ -13,11 +13,10 @@ const TimelineContainer = () => {
     ...buildInitialDataForInfinite('/api/v1/posts'),
   });
 
+  useDocumentTitle('タイムライン - CAwitter');
+
   return (
     <InfiniteScroll fetchMore={fetchMore} items={posts}>
-      <Helmet>
-        <title>タイムライン - CAwitter</title>
-      </Helmet>
       <TimelinePage timeline={posts} />
     </InfiniteScroll>
   );

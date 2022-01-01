@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 
 import { InfiniteScroll } from '../../components/foundation/InfiniteScroll';
@@ -9,6 +8,7 @@ import { useInfiniteFetch } from '../../hooks/use_infinite_fetch';
 import { fetchJSON } from '../../utils/fetchers';
 import { buildInitialData, buildInitialDataForInfinite } from '../../utils/buildInitialData';
 import { NotFoundContainer } from '../NotFoundContainer';
+import { useDocumentTitle } from '../../hooks/use_document_title';
 
 /** @type {React.VFC} */
 const PostContainer = () => {
@@ -22,12 +22,10 @@ const PostContainer = () => {
     ...buildInitialDataForInfinite(`/api/v1/posts/${postId}/comments`),
   });
 
+  useDocumentTitle(isLoadingPost ? '読込中 - CAwitter' : post ? `${post.user.name} さんのつぶやき - CAwitter` : null);
+
   if (isLoadingPost) {
-    return (
-      <Helmet>
-        <title>読込中 - CAwitter</title>
-      </Helmet>
-    );
+    return null;
   }
 
   if (post === null) {
@@ -36,9 +34,6 @@ const PostContainer = () => {
 
   return (
     <InfiniteScroll fetchMore={fetchMore} items={comments}>
-      <Helmet>
-        <title>{post.user.name} さんのつぶやき - CAwitter</title>
-      </Helmet>
       <PostPage comments={comments} post={post} />
     </InfiniteScroll>
   );

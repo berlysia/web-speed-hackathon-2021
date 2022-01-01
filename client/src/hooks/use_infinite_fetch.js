@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react"
+import { useInfiniteQuery } from "react-query";
 
 const LIMIT = 10;
 
@@ -18,72 +19,23 @@ const LIMIT = 10;
  * @returns {ReturnValues<T>}
  */
 export function useInfiniteFetch(apiPath, fetcher) {
-  const internalRef = React.useRef({ isLoading: false, offset: 0 });
+  const result = useInfiniteQuery(
+    apiPath,
+    (context) =>
+      fetcher(`${context.queryKey[0]}?limit=${LIMIT}${context.pageParam ? `&offset=${context.pageParam}` : ''}`),
+    {
+      getNextPageParam: (_lastPage, allPages) => {
+        return allPages.length * LIMIT;
+      },
+    },
+  );
 
-  const [result, setResult] = React.useState({
-    data: [],
-    error: null,
-    isLoading: true,
-  });
-
-  const fetchMore = React.useCallback(() => {
-    const { isLoading, offset } = internalRef.current;
-    if (isLoading) {
-      return;
-    }
-
-    setResult((cur) => ({
-      ...cur,
-      isLoading: true,
-    }));
-    internalRef.current = {
-      isLoading: true,
-      offset,
-    };
-
-    const promise = fetcher(apiPath);
-
-    promise.then((allData) => {
-      setResult((cur) => ({
-        ...cur,
-        data: [...cur.data, ...allData.slice(offset, offset + LIMIT)],
-        isLoading: false,
-      }));
-      internalRef.current = {
-        isLoading: false,
-        offset: offset + LIMIT,
-      };
-    });
-
-    promise.catch((error) => {
-      setResult((cur) => ({
-        ...cur,
-        error,
-        isLoading: false,
-      }));
-      internalRef.current = {
-        isLoading: false,
-        offset,
-      };
-    });
-  }, [apiPath, fetcher]);
-
-  React.useEffect(() => {
-    setResult(() => ({
-      data: [],
-      error: null,
-      isLoading: true,
-    }));
-    internalRef.current = {
-      isLoading: false,
-      offset: 0,
-    };
-
-    fetchMore();
-  }, [fetchMore]);
+  const data = React.useMemo(() => result.data?.pages.flat() ?? [], [result.data?.pages]);
 
   return {
-    ...result,
-    fetchMore,
+    data: data,
+    error: result.error,
+    isLoading: !result.isSuccess || !result.isError,
+    fetchMore: result.fetchNextPage,
   };
 }

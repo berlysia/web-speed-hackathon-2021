@@ -23,7 +23,7 @@ const AppContainer = () => {
   const [activeUser, setActiveUser] = React.useState(null);
   const { data, isLoading } = useFetch('/api/v1/me', fetchJSON);
   React.useEffect(() => {
-    setActiveUser(data);
+    setActiveUser(data ?? null);
   }, [data]);
 
   const [modalType, setModalType] = React.useState('none');

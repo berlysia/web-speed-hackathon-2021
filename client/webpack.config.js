@@ -76,7 +76,12 @@ const config = {
     //   inject: false,
     //   template: path.resolve(SRC_PATH, './index.ejs'),
     // }),
-    new WebpackManifestPlugin({}),
+    new WebpackManifestPlugin({
+      filter: (file) => {
+        if (file.name.match(/^webfont\.(js|css)$/)) return false;
+        return true;
+      }
+    }),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],

@@ -3,7 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ESBuildMinifyPlugin } = require('esbuild-loader');
-const HTMLInlineCSSWebpackPlugin = require('html-inline-css-webpack-plugin').default;
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 const webpack = require('webpack');
 
@@ -56,7 +56,7 @@ const config = {
   },
   output: {
     filename: 'scripts/[name].[hash].js',
-    publicPath: "/",
+    publicPath: '/',
     path: DIST_PATH,
   },
   plugins: [
@@ -72,10 +72,11 @@ const config = {
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',
     }),
-    new HtmlWebpackPlugin({
-      inject: false,
-      template: path.resolve(SRC_PATH, './index.ejs'),
-    }),
+    // new HtmlWebpackPlugin({
+    //   inject: false,
+    //   template: path.resolve(SRC_PATH, './index.ejs'),
+    // }),
+    new WebpackManifestPlugin({}),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],

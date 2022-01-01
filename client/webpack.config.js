@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ESBuildMinifyPlugin } = require('esbuild-loader');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const LoadablePlugin = require('@loadable/webpack-plugin');
 
 const webpack = require('webpack');
 
@@ -83,6 +84,7 @@ const config = {
         return true;
       },
     }),
+    new LoadablePlugin(),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],

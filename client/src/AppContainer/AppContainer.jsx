@@ -1,4 +1,5 @@
 import React from 'react';
+import loadable from '@loadable/component';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { AppPage } from '../components/application/AppPage';
@@ -7,11 +8,11 @@ import { useDocumentTitle } from '../hooks/use_document_title';
 import { fetchJSON } from '../utils/fetchers';
 import AuthModalContainer from '../features/AuthModal/AuthModalContainer';
 import NewPostModalContainer from '../features/NewPostModal/NewPostModalContainer';
-const NotFoundContainer = React.lazy(() => import('../pages/NotFound/NotFoundContainer'));
-const PostContainer = React.lazy(() => import('../pages/Post/PostContainer'));
-const TermContainer = React.lazy(() => import('../pages/Term/TermContainer'));
-const TimelineContainer = React.lazy(() => import('../pages/Timeline/TimelineContainer'));
-const UserProfileContainer = React.lazy(() => import('../pages/UserProfile/UserProfileContainer'));
+const NotFoundContainer = loadable(() => import('../pages/NotFound/NotFoundContainer'));
+const PostContainer = loadable(() => import('../pages/Post/PostContainer'));
+const TermContainer = loadable(() => import('../pages/Term/TermContainer'));
+const TimelineContainer = loadable(() => import('../pages/Timeline/TimelineContainer'));
+const UserProfileContainer = loadable(() => import('../pages/UserProfile/UserProfileContainer'));
 
 /** @type {React.VFC} */
 const AppContainer = () => {
@@ -31,7 +32,7 @@ const AppContainer = () => {
   const handleRequestOpenPostModal = React.useCallback(() => setModalType('post'), []);
   const handleRequestCloseModal = React.useCallback(() => setModalType('none'), []);
 
-  useDocumentTitle(isLoading && "読込中 - CAwitter")
+  useDocumentTitle(isLoading && '読込中 - CAwitter');
 
   if (isLoading) {
     return null;
@@ -45,58 +46,23 @@ const AppContainer = () => {
         onRequestOpenPostModal={handleRequestOpenPostModal}
       >
         <Routes>
-          <Route
-            element={
-              <React.Suspense fallback={<div>loading...</div>}>
-                <TimelineContainer />
-              </React.Suspense>
-            }
-            path="/"
-          />
-          <Route
-            element={
-              <React.Suspense fallback={<div>loading...</div>}>
-                <UserProfileContainer />
-              </React.Suspense>
-            }
-            path="/users/:username"
-          />
-          <Route
-            element={
-              <React.Suspense fallback={<div>loading...</div>}>
-                <PostContainer />
-              </React.Suspense>
-            }
-            path="/posts/:postId"
-          />
-          <Route
-            element={
-              <React.Suspense fallback={<div>loading...</div>}>
-                <TermContainer />
-              </React.Suspense>
-            }
-            path="/terms"
-          />
-          <Route
-            element={
-              <React.Suspense fallback={<div>loading...</div>}>
-                <NotFoundContainer />
-              </React.Suspense>
-            }
-            path="*"
-          />
+          <Route element={<TimelineContainer fallback={<div>loading...</div>} />} path="/" />
+          <Route element={<UserProfileContainer fallback={<div>loading...</div>} />} path="/users/:username" />
+          <Route element={<PostContainer fallback={<div>loading...</div>} />} path="/posts/:postId" />
+          <Route element={<TermContainer fallback={<div>loading...</div>} />} path="/terms" />
+          <Route element={<NotFoundContainer fallback={<div>loading...</div>} />} path="*" />
         </Routes>
       </AppPage>
 
       {modalType === 'auth' ? (
-        <React.Suspense fallback={<div>loading...</div>}>
-          <AuthModalContainer onRequestCloseModal={handleRequestCloseModal} onUpdateActiveUser={setActiveUser} />
-        </React.Suspense>
+        <AuthModalContainer
+          onRequestCloseModal={handleRequestCloseModal}
+          onUpdateActiveUser={setActiveUser}
+          fallback={<div>loading...</div>}
+        />
       ) : null}
       {modalType === 'post' ? (
-        <React.Suspense fallback={<div>loading...</div>}>
-          <NewPostModalContainer onRequestCloseModal={handleRequestCloseModal} />
-        </React.Suspense>
+        <NewPostModalContainer onRequestCloseModal={handleRequestCloseModal} fallback={<div>loading...</div>} />
       ) : null}
     </>
   );

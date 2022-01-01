@@ -80,7 +80,7 @@ const config = {
       filter: (file) => {
         if (file.name.match(/^webfont\.(js|css)$/)) return false;
         return true;
-      }
+      },
     }),
   ],
   resolve: {
@@ -98,6 +98,16 @@ const config = {
       }),
     ],
     minimize: !IS_DEV,
+    splitChunks: {
+      maxInitialRequests: 3,
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
   },
 };
 

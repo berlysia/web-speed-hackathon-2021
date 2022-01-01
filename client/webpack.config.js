@@ -27,11 +27,13 @@ const config = {
   },
   devtool: IS_DEV ? 'inline-source-map' : false,
   entry: {
-    main: [
-      path.resolve(SRC_PATH, './index.css'),
-      path.resolve(SRC_PATH, './buildinfo.js'),
-      path.resolve(SRC_PATH, './index.jsx'),
-    ],
+    main: {
+      import: [
+        path.resolve(SRC_PATH, './index.css'),
+        path.resolve(SRC_PATH, './buildinfo.js'),
+        path.resolve(SRC_PATH, './index.jsx'),
+      ],
+    },
     webfont: path.resolve(SRC_PATH, './styles/webfont.css'),
   },
   mode: 'none',
@@ -54,6 +56,7 @@ const config = {
   },
   output: {
     filename: 'scripts/[name].[hash].js',
+    chunkFilename: 'scripts/[name].[hash].js',
     publicPath: '/',
     path: DIST_PATH,
   },
@@ -96,13 +99,15 @@ const config = {
       }),
     ],
     minimize: !IS_DEV,
+    chunkIds: 'named',
     splitChunks: {
-      maxInitialRequests: 3,
+      chunks: 'all',
       cacheGroups: {
-        commons: {
+        defaultVendors: {
+          name: "vendors",
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
+          priority: -10,
+          reuseExistingChunk: true,
         },
       },
     },

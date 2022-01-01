@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { AppContainer } from './containers/AppContainer';
+import { AppContainer } from './AppContainer';
 import { DocumentTitleContextProvider } from './hooks/use_document_title';
 
 const queryClient = new QueryClient({

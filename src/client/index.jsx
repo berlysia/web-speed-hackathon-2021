@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
+import { loadableReady } from '@loadable/component';
 
 import { Root } from './root';
 import { DocumentTitleContextProvider } from './hooks/use_document_title';
@@ -21,15 +22,17 @@ const queryClient = new QueryClient({
   },
 });
 
-ReactDOM.render(
-  <BrowserRouter>
-    <DocumentTitleContextProvider>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={dehydratedState}>
-          <Root />
-        </Hydrate>
-      </QueryClientProvider>
-    </DocumentTitleContextProvider>
-  </BrowserRouter>,
-  document.getElementById('app'),
-);
+loadableReady(() => {
+  ReactDOM.hydrate(
+    <BrowserRouter>
+      <DocumentTitleContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={dehydratedState}>
+            <Root />
+          </Hydrate>
+        </QueryClientProvider>
+      </DocumentTitleContextProvider>
+    </BrowserRouter>,
+    document.getElementById('app'),
+  );
+});

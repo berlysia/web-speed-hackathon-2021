@@ -6,18 +6,20 @@ import { Comment, Post, User } from '../models';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
+import { ChunkExtractor } from '@loadable/server';
 import { Root } from '../../client/root';
 import { dehydrate, Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { wrapFetcherAsInfinite } from '../../client/hooks/use_infinite_fetch';
 
 async function readManifest() {
   const filepath = path.resolve(__dirname, '../../../dist/manifest.json');
-  return await readFile(filepath, 'utf-8');
+  return JSON.parse(await readFile(filepath, 'utf-8'));
 }
 
+const statsFile = path.resolve(__dirname, '../../../dist/loadable-stats.json');
+
 async function buildHeadTags() {
-  const raw = await readManifest();
-  const manifest = JSON.parse(raw);
+  const manifest = await readManifest();
   const js = [];
   const css = [];
   // const lazyCss = [];
@@ -41,19 +43,27 @@ function setup() {
   return {
     queryClient,
     async renderHTML(url, headTags) {
+      const extractor = new ChunkExtractor({ statsFile });
       const dehydratedState = dehydrate(queryClient);
       const appHtml = renderToString(
-        <StaticRouter location={url}>
-          <QueryClientProvider client={queryClient}>
-            <Hydrate state={dehydratedState}>
-              <Root />
-            </Hydrate>
-          </QueryClientProvider>
-        </StaticRouter>,
+        extractor.collectChunks(
+          <StaticRouter location={url}>
+            <QueryClientProvider client={queryClient}>
+              <Hydrate state={dehydratedState}>
+                <Root />
+              </Hydrate>
+            </QueryClientProvider>
+          </StaticRouter>,
+        ),
       );
+
       return await ejs.renderFile(
         path.resolve(__dirname, '../../client/index.ejs'),
-        { headTags: headTags.join("\n"), appHtml, dehydratedState },
+        {
+          headTags: extractor.getScriptTags() + headTags.join('\n') + extractor.getLinkTags(),
+          appHtml,
+          dehydratedState,
+        },
         {},
       );
     },

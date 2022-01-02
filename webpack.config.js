@@ -80,12 +80,11 @@ const config = {
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',
     }),
-    // new HtmlWebpackPlugin({
-    //   inject: false,
-    //   template: path.resolve(SRC_PATH, './index.ejs'),
-    // }),
     new WebpackManifestPlugin({}),
     new LoadablePlugin(),
+    ...(IS_DEV ? [new HtmlWebpackPlugin({
+      inject: false,
+    })] : []),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],

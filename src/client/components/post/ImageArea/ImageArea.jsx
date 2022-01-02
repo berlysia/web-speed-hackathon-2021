@@ -30,7 +30,13 @@ const ImageArea = ({ images }) => {
               <CoveredImage
                 alt={image.alt}
                 src={getImagePath(image.id)}
-                srcSet={`${getImagePath(image.id, 'small')} 640w, ${getImagePath(image.id, "medium")} 1000w`}
+                srcSet={`${getImagePath(image.id, 'tiny')} 200w, ${getImagePath(
+                  image.id,
+                  'small',
+                )} 400w, ${getImagePath(image.id, 'medium')} 640w`}
+                sizes={`(max-width: 479px) ${images.length === 1 ? '382px' : '189px'}, ${
+                  images.length === 1 ? '522px' : '245px'
+                }`}
               />
             </div>
           );

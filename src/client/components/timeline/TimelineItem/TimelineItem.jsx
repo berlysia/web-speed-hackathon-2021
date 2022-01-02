@@ -65,6 +65,8 @@ const TimelineItem = ({ post }) => {
                 '128',
               )} 128w, ${getProfileImagePath(post.user.profileImage.id, '80')} 80w`}
               sizes="62px"
+              width="62"
+              height="62"
               loading="lazy"
             />
             <span className="sr-only">ユーザーページを開く</span>

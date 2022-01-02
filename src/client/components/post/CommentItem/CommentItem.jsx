@@ -27,6 +27,8 @@ const CommentItem = ({ comment }) => {
                 '80',
               )} 80w`}
               sizes="50px"
+              width="50"
+              height="50"
             />
             <span className="sr-only">ユーザーページを開く</span>
           </Link>

@@ -37,6 +37,8 @@ const ImageArea = ({ images }) => {
                 sizes={`(max-width: 479px) ${images.length === 1 ? '382px' : '189px'}, ${
                   images.length === 1 ? '522px' : '245px'
                 }`}
+                width={images.length === 1 ? "640" : "320"}
+                height={images.length > 2 && (images.length !== 3 || idx !== 0) ? "480" : "240"}
               />
             </div>
           );

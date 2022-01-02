@@ -26,6 +26,10 @@ const PostItem = ({ post }) => {
               <img
                 alt={post.user.profileImage.alt}
                 src={getProfileImagePath(post.user.profileImage.id)}
+                srcSet={`${getProfileImagePath(post.user.profileImage.id, '256')} 256w, ${getProfileImagePath(
+                  post.user.profileImage.id,
+                  "128",
+                )} 128w, ${getProfileImagePath(post.user.profileImage.id, '80')} 80w`}
                 loading="lazy"
               />
             </Link>

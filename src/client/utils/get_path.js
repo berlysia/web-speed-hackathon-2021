@@ -28,10 +28,11 @@ function getSoundWaveImagePath(soundId) {
 
 /**
  * @param {string} profileImageId
+ * @param {"80" | "128" | "256"} scale
  * @returns {string}
  */
-function getProfileImagePath(profileImageId) {
-  return `/images/profiles/${profileImageId}.avif`;
+function getProfileImagePath(profileImageId, scale = "256") {
+  return `/images/profiles/${profileImageId}.${scale}.avif`;
 }
 
 export { getImagePath, getMoviePath, getSoundPath, getSoundWaveImagePath, getProfileImagePath };

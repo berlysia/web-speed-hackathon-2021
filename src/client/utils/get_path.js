@@ -1,9 +1,10 @@
 /**
  * @param {string} imageId
+ * @param {"medium" | "small"} scale
  * @returns {string}
  */
-function getImagePath(imageId) {
-  return `/images/${imageId}.avif`;
+function getImagePath(imageId, scale = "medium") {
+  return `/images/${imageId}.${scale}.avif`;
 }
 
 /**

@@ -27,7 +27,11 @@ const ImageArea = ({ images }) => {
                 'row-span-2': images.length <= 2 || (images.length === 3 && idx === 0),
               })}
             >
-              <CoveredImage alt={image.alt} src={getImagePath(image.id)} />
+              <CoveredImage
+                alt={image.alt}
+                src={getImagePath(image.id)}
+                srcSet={`${getImagePath(image.id, 'small')} 640w, ${getImagePath(image.id, "medium")} 1000w`}
+              />
             </div>
           );
         })}

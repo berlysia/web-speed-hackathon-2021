@@ -55,6 +55,7 @@ const SoundPlayer = ({ sound }) => {
           onClick={handleTogglePlaying}
           disabled={!isReady}
           type="button"
+          aria-label="音声を再生または一時停止"
         >
           <FontAwesomeIcon iconType={isPlaying ? 'pause' : 'play'} styleType="solid" />
         </button>

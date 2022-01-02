@@ -32,7 +32,7 @@ const PausableMovie = ({ src }) => {
 
   return (
     <AspectRatioBox aspectHeight={1} aspectWidth={1}>
-      <button className="group relative block w-full h-full" onClick={handleClick} type="button">
+      <button aria-label="動画を再生または一時停止" className="group relative block w-full h-full" onClick={handleClick} type="button">
         <video
           ref={videoRef}
           src={src}

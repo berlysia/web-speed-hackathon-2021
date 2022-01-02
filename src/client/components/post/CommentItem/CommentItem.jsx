@@ -21,13 +21,14 @@ const CommentItem = ({ comment }) => {
           >
             <img
               alt={comment.user.profileImage.alt}
-              src={getProfileImagePath(comment.user.profileImage.id, "80")}
-              srcSet={`${getProfileImagePath(
+              src={getProfileImagePath(comment.user.profileImage.id, '80')}
+              srcSet={`${getProfileImagePath(comment.user.profileImage.id, '128')} 128w, ${getProfileImagePath(
                 comment.user.profileImage.id,
-                "128",
-              )} 128w, ${getProfileImagePath(comment.user.profileImage.id, '80')} 80w`}
+                '80',
+              )} 80w`}
               sizes="50px"
             />
+            <span className="sr-only">ユーザーページを開く</span>
           </Link>
         </div>
         <div className="flex-grow flex-shrink min-w-0">

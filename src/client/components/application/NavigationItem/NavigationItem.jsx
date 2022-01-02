@@ -29,7 +29,7 @@ const NavigationItem = ({ href, icon, onClick, text }) => {
           to={href}
         >
           <span className="text-xl lg:pr-2 lg:text-3xl">{icon}</span>
-          <span className="hidden sm:inline sm:text-sm lg:text-xl lg:font-bold">{text}</span>
+          <span className="sr-only sm:inline sm:text-sm lg:text-xl lg:font-bold">{text}</span>
         </NavLink>
       ) : (
         <button
@@ -37,7 +37,7 @@ const NavigationItem = ({ href, icon, onClick, text }) => {
           onClick={onClick}
         >
           <span className="text-xl lg:pr-2 lg:text-3xl">{icon}</span>
-          <span className="hidden sm:inline sm:text-sm lg:text-xl lg:font-bold">{text}</span>
+          <span className="sr-only sm:inline sm:text-sm lg:text-xl lg:font-bold">{text}</span>
         </button>
       )}
     </li>

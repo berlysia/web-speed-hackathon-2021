@@ -39,6 +39,7 @@ const PausableMovie = ({ src }) => {
           autoPlay
           loop
           muted
+          preload={false}
           className="w-full"
           onPlay={handleStateChange}
           onPause={handleStateChange}

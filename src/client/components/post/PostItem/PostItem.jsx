@@ -30,6 +30,7 @@ const PostItem = ({ post }) => {
                   post.user.profileImage.id,
                   "128",
                 )} 128w, ${getProfileImagePath(post.user.profileImage.id, '80')} 80w`}
+                sizes="62px"
                 loading="lazy"
               />
             </Link>

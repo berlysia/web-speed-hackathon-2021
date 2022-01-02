@@ -21,11 +21,12 @@ const CommentItem = ({ comment }) => {
           >
             <img
               alt={comment.user.profileImage.alt}
-              src={getProfileImagePath(comment.user.profileImage.id, "128")}
+              src={getProfileImagePath(comment.user.profileImage.id, "80")}
               srcSet={`${getProfileImagePath(
                 comment.user.profileImage.id,
                 "128",
               )} 128w, ${getProfileImagePath(comment.user.profileImage.id, '80')} 80w`}
+              sizes="50px"
             />
           </Link>
         </div>
